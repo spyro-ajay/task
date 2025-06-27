@@ -15,6 +15,7 @@
       height: 100vh;
       padding: 30px;
       color: #1e293b;
+      position: relative;
     }
     h1 {
       color: #2563eb;
@@ -36,18 +37,6 @@
     }
     #codeContainer:hover {
       background-color: #dbeafe;
-    }
-    #notice {
-      margin-top: 25px;
-      background: #e0f2fe;
-      border-left: 5px solid #0284c7;
-      padding: 15px 25px;
-      border-radius: 8px;
-      font-size: 16px;
-      max-width: 400px;
-      text-align: center;
-      color: #0369a1;
-      line-height: 1.4;
     }
     #copyBtn, #okBtn {
       margin-top: 25px;
@@ -78,6 +67,28 @@
       display: block;
       margin: 0 auto 15px auto;
     }
+
+    /* Notice fixed bottom */
+    #notice {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 90vw;
+      width: 400px;
+      background: #e0f2fe;
+      border-left: 5px solid #0284c7;
+      padding: 15px 25px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #0369a1;
+      text-align: center;
+      line-height: 1.4;
+      font-weight: 600;
+      box-shadow: 0 2px 10px rgb(3 105 161 / 0.15);
+      user-select: none;
+      z-index: 1000;
+    }
   </style>
 </head>
 <body>
@@ -89,11 +100,14 @@
   <button id="copyBtn" aria-label="Copy Code">Copy Code</button>
   <button id="okBtn" aria-label="Proceed to GP Link" style="display:none;">OK, Proceed to GP Link</button>
 
-  <div id="notice">🔔 Your code is valid for 7 minutes only.</div>
-
   <div id="loader">
     <img src="https://i.gifer.com/ZZ5H.gif" width="60" alt="Loading..." />
     Redirecting to GP Link...
+  </div>
+
+  <div id="notice">
+    🔔 Your code is valid for 7 minutes only and is unique to you.<br />
+    ⚠️ This code will work on the reward page only after 1 min 30 sec (secret for security).
   </div>
 
   <!-- Firebase Scripts -->
