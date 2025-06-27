@@ -21,7 +21,7 @@
 </head>
 <body>
   <h1>🚀 Starting Task...</h1>
-  <p>Please wait, verifying your token and redirecting...</p>
+  <p>Please wait, verifying your token and redirecting to GPLink...</p>
   <div id="loader">
     <img src="https://i.gifer.com/ZZ5H.gif" width="60" alt="Loading..." />
   </div>
@@ -31,6 +31,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
   <script>
+    // ✅ Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyBOASGBeUx9WtencQSpHxIuVYROCIg5yGg",
       authDomain: "eran-money-34265.firebaseapp.com",
@@ -44,6 +45,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
+    // ✅ Get UID, Task, Token
     const query = new URLSearchParams(window.location.search);
     const uid = query.get("uid");
     const task = query.get("task");
@@ -52,17 +54,26 @@
     if (!uid || !task || !token) {
       document.body.innerHTML = "<h2 style='color:red;'>❌ UID, task, or token missing.</h2>";
     } else {
-      db.ref(`verifyTokens/${uid}/${task}`).once("value").then(snapshot => {
-        const data = snapshot.val();
-        if (data && data.token === token) {
-          db.ref(`tokens/${uid}/${task}/verified`).set(true).then(() => {
-            setTimeout(() => {
-              window.location.href = `https://gplinks.co/BH2IedlQ?uid=${uid}&task=${task}`;},3000);
-          });
-        } else {
-          document.body.innerHTML = "<h2 style='color:red;'>❌ Invalid or expired token.</h2>";
-        }
-      });
+      // ✅ Validate Token
+      db.ref(`verifyTokens/${uid}/${task}`).once("value")
+        .then(snapshot => {
+          const data = snapshot.val();
+          if (data && data.token === token) {
+            // Mark token as verified
+            db.ref(`tokens/${uid}/${task}/verified`).set(true)
+              .then(() => {
+                // ✅ Redirect to GPLink with 3s delay
+                setTimeout(() => {
+                  window.location.href = `https://gplinks.co/BH2IedlQ?uid=${uid}&task=${task}`;
+                }, 3000);
+              });
+          } else {
+            document.body.innerHTML = "<h2 style='color:red;'>❌ Invalid or expired token.</h2>";
+          }
+        })
+        .catch(err => {
+          document.body.innerHTML = `<h2 style='color:red;'>🔥 Firebase error: ${err.message}</h2>`;
+        });
     }
   </script>
 </body>
