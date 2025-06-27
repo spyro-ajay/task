@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
   <meta charset="UTF-8" />
   <title>Starting Task...</title>
@@ -7,41 +7,76 @@
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: #f0f0f0;
-      text-align: center;
-      padding: 50px;
+      background: #f9fafb;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 30px;
+      color: #1e293b;
     }
     h1 {
-      color: #3b82f6;
-    }
-    #loader {
-      margin-top: 30px;
-      display: none;
+      color: #2563eb;
+      margin-bottom: 10px;
     }
     #codeContainer {
-      margin-top: 30px;
-      background: #e0f2fe;
-      padding: 20px;
-      border-radius: 10px;
-      display: inline-block;
-      font-size: 20px;
+      margin-top: 20px;
+      background: #eff6ff;
+      padding: 20px 40px;
+      border-radius: 12px;
+      font-size: 28px;
+      font-weight: 600;
+      color: #1e40af;
+      letter-spacing: 3px;
       user-select: all;
       cursor: pointer;
+      box-shadow: 0 4px 8px rgb(59 130 246 / 0.3);
+      transition: background-color 0.3s ease;
+    }
+    #codeContainer:hover {
+      background-color: #dbeafe;
     }
     #notice {
-      margin-top: 20px;
-      font-weight: bold;
-      color: #0c4a6e;
-    }
-    #copyBtn {
-      margin-top: 15px;
-      padding: 8px 20px;
-      background-color: #3b82f6;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
+      margin-top: 25px;
+      background: #e0f2fe;
+      border-left: 5px solid #0284c7;
+      padding: 15px 25px;
+      border-radius: 8px;
       font-size: 16px;
+      max-width: 400px;
+      text-align: center;
+      color: #0369a1;
+      line-height: 1.4;
+    }
+    #copyBtn, #okBtn {
+      margin-top: 25px;
+      padding: 12px 28px;
+      font-size: 17px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      color: white;
+      background: #2563eb;
+      box-shadow: 0 4px 8px rgb(37 99 235 / 0.4);
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+    #copyBtn:hover, #okBtn:hover {
+      background-color: #1e40af;
+    }
+    #loader {
+      margin-top: 35px;
+      display: none;
+      text-align: center;
+      color: #2563eb;
+      font-weight: 600;
+      font-size: 18px;
+    }
+    #loader img {
+      display: block;
+      margin: 0 auto 15px auto;
     }
   </style>
 </head>
@@ -49,15 +84,16 @@
   <h1>🚀 Starting Task...</h1>
   <p>Please copy your unique code below and use it on the reward page within 7 minutes.</p>
 
-  <div id="codeContainer">Generating code...</div>
-  <br />
-  <button id="copyBtn">Copy Code</button>
+  <div id="codeContainer" title="Click to copy code">Generating code...</div>
+
+  <button id="copyBtn" aria-label="Copy Code">Copy Code</button>
+  <button id="okBtn" aria-label="Proceed to GP Link" style="display:none;">OK, Proceed to GP Link</button>
 
   <div id="notice">🔔 Your code is valid for 7 minutes only.</div>
 
   <div id="loader">
     <img src="https://i.gifer.com/ZZ5H.gif" width="60" alt="Loading..." />
-    <p>Redirecting...</p>
+    Redirecting to GP Link...
   </div>
 
   <!-- Firebase Scripts -->
@@ -84,37 +120,48 @@
 
     const codeContainer = document.getElementById("codeContainer");
     const copyBtn = document.getElementById("copyBtn");
+    const okBtn = document.getElementById("okBtn");
     const loader = document.getElementById("loader");
 
     if (!uid || !task) {
       document.body.innerHTML = "<h2 style='color:red;'>❌ UID or Task ID missing from URL.</h2>";
     } else {
-      // Generate unique code/token
+      // Generate unique token
       const token = Math.random().toString(36).substring(2, 10);
       codeContainer.textContent = token;
 
-      // Save token and status: false with timestamp
+      // Save token and status false in Firebase
       db.ref(`clickTrackings/${uid}/${task}`).set({
         token: token,
         status: false,
         createdAt: Date.now()
       });
 
-      // Copy button functionality
-      copyBtn.addEventListener("click", () => {
+      // Allow copying by clicking code container also
+      codeContainer.onclick = () => copyCode();
+
+      function copyCode() {
         navigator.clipboard.writeText(token).then(() => {
           alert("Code copied to clipboard! Use it on the reward page within 7 minutes.");
-          // Optionally show loader and redirect to reward page or let user manually go
-          // Uncomment below lines if you want auto redirect on copy
-          /*
+          // Show OK button after copy
+          okBtn.style.display = "inline-block";
           copyBtn.style.display = "none";
-          codeContainer.style.display = "none";
-          loader.style.display = "block";
-          setTimeout(() => {
-            window.location.href = "https://spyro-ajay.github.io/reward.html";
-          }, 2000);
-          */
         });
+      }
+
+      copyBtn.addEventListener("click", copyCode);
+
+      okBtn.addEventListener("click", () => {
+        // Show loader and hide buttons
+        okBtn.style.display = "none";
+        copyBtn.style.display = "none";
+        codeContainer.style.display = "none";
+        loader.style.display = "block";
+
+        // Redirect to GP Link (replace with your actual GP Link URL)
+        setTimeout(() => {
+          window.location.href = "https://example.com/gplink";  // <-- Yahan GPLink ka URL daal dena
+        }, 1500);
       });
     }
   </script>
