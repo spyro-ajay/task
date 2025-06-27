@@ -22,6 +22,7 @@
     <img src="https://i.gifer.com/ZZ5H.gif" width="60" alt="Loading..." />
   </div>
 
+  <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -52,8 +53,8 @@
         if (data && data.token === token) {
           db.ref(`tokens/${uid}/${task}/verified`).set(true).then(() => {
             setTimeout(() => {
-              // ✅ Redirect to GPLink → it will finally send to reward.html
-              window.location.href = `https://gplinks.co/cfJMkN?uid=${uid}&task=${task}`;
+              // ✅ Open GPlink page (NO need for ?uid etc.)
+              window.location.href = "https://gplinks.co/cfJMkN";
             }, 2000);
           });
         } else {
