@@ -50,16 +50,27 @@
 
     const uid = new URLSearchParams(window.location.search).get("uid");
     const task = new URLSearchParams(window.location.search).get("task");
+    const token = new URLSearchParams(window.location.search).get("token");
 
-    if (uid && task) {
-      firebase.database().ref(`tokens/${uid}/${task}/verified`).set(true).then(() => {
-        // 2 second wait before sending to GPLink
-        setTimeout(() => {
-          window.location.href = "https://spyro-ajay.github.io/reward.html/"; // Replace with your GPLink
-        }, 2000);
-      });
+    if (uid && task && token) {
+      // ✅ Token Verify & Mark Task as Verified
+      firebase.database().ref(`verifyTokens/${uid}/${task}`).once("value")
+        .then(snapshot => {
+          const serverToken = snapshot.val();
+          if (serverToken && serverToken.token === token) {
+            // Mark verified
+            firebase.database().ref(`verifyTokens/${uid}/${task}/verified`).set(true).then(() => {
+              // ✅ Redirect to GPLink after 2 sec
+              setTimeout(() => {
+                window.location.href = "https://link.gplinks.in/your-link"; // <-- Replace with real GPLink
+              }, 2000);
+            });
+          } else {
+            document.body.innerHTML = "<h2 style='color:red;'>❌ Invalid or Expired Token</h2>";
+          }
+        });
     } else {
-      document.body.innerHTML = "<h2 style='color:red;'>❌ Invalid Link. UID or Task missing.</h2>";
+      document.body.innerHTML = "<h2 style='color:red;'>❌ Invalid Link. UID or Token Missing</h2>";
     }
   </script>
 </body>
