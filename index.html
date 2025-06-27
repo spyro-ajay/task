@@ -111,7 +111,8 @@
   </div>
 
   <div id="notice">
-    🔔 Your code is valid for 7 minutes only and is unique to you.
+    🔔 Your code is valid for 7 minutes only and is unique to you.<br />
+   
   </div>
 
   <!-- Firebase Scripts -->
@@ -145,15 +146,18 @@
     if (!uid || !task) {
       document.body.innerHTML = "<h2 style='color:red;'>❌ UID or Task ID missing from URL.</h2>";
     } else {
+      // ✅ Generate unique token
       const token = Math.random().toString(36).substring(2, 10);
       codeContainer.textContent = token;
 
+      // ✅ Save to Firebase
       db.ref(`clickTrackings/${uid}/${task}`).set({
         token: token,
         status: false,
         createdAt: Date.now()
       });
 
+      // ✅ Copy on box or button click
       function copyCode() {
         navigator.clipboard.writeText(token).then(() => {
           copiedMsg.style.display = "block";
@@ -165,6 +169,7 @@
       codeContainer.onclick = copyCode;
       copyBtn.onclick = copyCode;
 
+      // ✅ GP Link redirect — opens in browser
       okBtn.onclick = () => {
         codeContainer.style.display = "none";
         copiedMsg.style.display = "none";
@@ -172,7 +177,11 @@
         loader.style.display = "block";
 
         setTimeout(() => {
-          window.open("https://gplinks.co/yMusxqr", "_blank"); // Replace this with actual GPLink
+          const a = document.createElement('a');
+          a.href = "https://gplinks.co/yMusxqr"; // 🔁 Replace with your actual GPLink here
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.click();
         }, 1500);
       };
     }
