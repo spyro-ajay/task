@@ -43,24 +43,21 @@
     const query = new URLSearchParams(window.location.search);
     const uid = query.get("uid");
     const task = query.get("task");
-    const token = query.get("token");
+    const token = Math.random().toString(36).substring(2, 10);
 
-    if (!uid || !task || !token) {
-      document.body.innerHTML = "<h2 style='color:red;'>❌ UID, task, or token missing.</h2>";
+    if (!uid || !task) {
+      document.body.innerHTML = "<h2 style='color:red;'>❌ UID or Task ID missing from URL.</h2>";
     } else {
-      db.ref(`clickTrackings/${uid}/${task}`).once("value").then(snapshot => {
-        const data = snapshot.val();
-        if (data && data.token === token) {
-          // ✅ Mark as verified
-          db.ref(`clickTrackings/${uid}/${task}/status`).set(true).then(() => {
-            setTimeout(() => {
-              // ✅ Redirect to Reward Page
-              window.location.href = "https://spyro-ajay.github.io/reward.html?uid=" + uid + "&task=" + task;
-            }, 2000);
-          });
-        } else {
-          document.body.innerHTML = "<h2 style='color:red;'>❌ Invalid or expired token.</h2>";
-        }
+      // Save token and status: false
+      db.ref(`clickTrackings/${uid}/${task}`).set({
+        token: token,
+        status: false,
+        createdAt: Date.now()
+      }).then(() => {
+        // 👇 Redirect to GPLink (no uid/token in URL)
+        setTimeout(() => {
+          window.location.href = "https://spyro-ajay.github.io/reward.html/";
+        }, 2000);
       });
     }
   </script>
