@@ -2,33 +2,28 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Redirecting Task...</title>
+  <title>Starting Task...</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body {
       font-family: 'Poppins', sans-serif;
-      background: #f4f6fb;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
+      background: #f0f0f0;
       text-align: center;
-      padding: 20px;
+      padding: 50px;
     }
     h1 {
       color: #3b82f6;
     }
     #loader {
-      margin-top: 20px;
+      margin-top: 30px;
     }
   </style>
 </head>
 <body>
   <h1>🚀 Starting Task...</h1>
-  <p>Please wait, redirecting you to the task page...</p>
+  <p>Please wait, verifying your token and redirecting...</p>
   <div id="loader">
-    <img src="https://i.gifer.com/ZZ5H.gif" width="50" alt="Loading..." />
+    <img src="https://i.gifer.com/ZZ5H.gif" width="60" alt="Loading..." />
   </div>
 
   <!-- Firebase Scripts -->
@@ -36,6 +31,7 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
   <script>
+    // ✅ Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyBOASGBeUx9WtencQSpHxIuVYROCIg5yGg",
       authDomain: "eran-money-34265.firebaseapp.com",
@@ -47,30 +43,36 @@
     };
 
     firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    const uid = new URLSearchParams(window.location.search).get("uid");
-    const task = new URLSearchParams(window.location.search).get("task");
-    const token = new URLSearchParams(window.location.search).get("token");
+    // ✅ Get Query Params
+    const query = new URLSearchParams(window.location.search);
+    const uid = query.get("uid");
+    const task = query.get("task");
+    const token = query.get("token");
 
-    if (uid && task && token) {
-      // ✅ Token Verify & Mark Task as Verified
-      firebase.database().ref(`verifyTokens/${uid}/${task}`).once("value")
-        .then(snapshot => {
-          const serverToken = snapshot.val();
-          if (serverToken && serverToken.token === token) {
-            // Mark verified
-            firebase.database().ref(`verifyTokens/${uid}/${task}/verified`).set(true).then(() => {
-              // ✅ Redirect to GPLink after 2 sec
-              setTimeout(() => {
-                window.location.href = "https://link.gplinks.in/your-link"; // <-- Replace with real GPLink
-              }, 2000);
-            });
-          } else {
-            document.body.innerHTML = "<h2 style='color:red;'>❌ Invalid or Expired Token</h2>";
-          }
-        });
+    if (!uid || !task || !token) {
+      document.body.innerHTML = "<h2 style='color:red;'>❌ Invalid Link! UID, task, or token missing.</h2>";
     } else {
-      document.body.innerHTML = "<h2 style='color:red;'>❌ Invalid Link. UID or Token Missing</h2>";
+      const verifyPath = `verifyTokens/${uid}/${task}`;
+
+      db.ref(verifyPath).once("value").then(snapshot => {
+        const data = snapshot.val();
+
+        if (data && data.token === token) {
+          // ✅ Set verified
+          db.ref(`tokens/${uid}/${task}/verified`).set(true).then(() => {
+            // ⏳ Wait 3 seconds then redirect to GPLink
+            setTimeout(() => {
+              window.location.href = "https://gplinks.in/your-real-link"; // 🔁 Change this
+            }, 3000);
+          });
+        } else {
+          document.body.innerHTML = "<h2 style='color:red;'>❌ Invalid or Expired Token.</h2>";
+        }
+      }).catch(error => {
+        document.body.innerHTML = "<h2 style='color:red;'>🔥 Firebase Error: " + error.message + "</h2>";
+      });
     }
   </script>
 </body>
