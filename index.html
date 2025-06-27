@@ -57,8 +57,7 @@
         if (data && data.token === token) {
           db.ref(`tokens/${uid}/${task}/verified`).set(true).then(() => {
             setTimeout(() => {
-              window.location.href = `https://spyro-ajay.github.io/reward.html?uid=${uid}&task=${task}`;
-            }, 3000);
+              window.location.href = `https://gplinks.co/BH2IedlQ?uid=${uid}&task=${task}`;  }, 2000);}, 3000);
           });
         } else {
           document.body.innerHTML = "<h2 style='color:red;'>❌ Invalid or expired token.</h2>";
