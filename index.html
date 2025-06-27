@@ -17,7 +17,10 @@
       color: #1e293b;
       position: relative;
     }
-    h1 { color: #2563eb; margin-bottom: 10px; }
+    h1 {
+      color: #2563eb;
+      margin-bottom: 10px;
+    }
     #codeContainer {
       margin-top: 20px;
       background: #eff6ff;
@@ -32,7 +35,9 @@
       box-shadow: 0 4px 8px rgb(59 130 246 / 0.3);
       transition: background-color 0.3s ease;
     }
-    #codeContainer:hover { background-color: #dbeafe; }
+    #codeContainer:hover {
+      background-color: #dbeafe;
+    }
     #copiedMsg {
       color: green;
       margin-top: 10px;
@@ -53,7 +58,9 @@
       transition: background-color 0.3s ease;
       user-select: none;
     }
-    #copyBtn:hover, #okBtn:hover { background-color: #1e40af; }
+    #copyBtn:hover, #okBtn:hover {
+      background-color: #1e40af;
+    }
     #loader {
       margin-top: 35px;
       display: none;
@@ -105,7 +112,7 @@
 
   <div id="notice">
     🔔 Your code is valid for 7 minutes only and is unique to you.<br />
-    
+    ✅ Use this code on the reward page after completing the task.
   </div>
 
   <!-- Firebase Scripts -->
@@ -139,15 +146,18 @@
     if (!uid || !task) {
       document.body.innerHTML = "<h2 style='color:red;'>❌ UID or Task ID missing from URL.</h2>";
     } else {
+      // ✅ Generate unique token
       const token = Math.random().toString(36).substring(2, 10);
       codeContainer.textContent = token;
 
+      // ✅ Save to Firebase
       db.ref(`clickTrackings/${uid}/${task}`).set({
         token: token,
         status: false,
         createdAt: Date.now()
       });
 
+      // ✅ Copy on box or button click
       function copyCode() {
         navigator.clipboard.writeText(token).then(() => {
           copiedMsg.style.display = "block";
@@ -159,19 +169,22 @@
       codeContainer.onclick = copyCode;
       copyBtn.onclick = copyCode;
 
+      // ✅ GP Link redirect on user click
       okBtn.onclick = () => {
+        const gplink = "https://gplinks.co/yMusxqr"; // 🔁 Replace with your GPLink
+
+        // Open in new tab immediately
+        const win = window.open(gplink, '_blank', 'noopener,noreferrer');
+        if (!win) {
+          alert("❌ Please allow pop-ups in your browser settings.");
+          return;
+        }
+
+        // Show loader in current tab
         codeContainer.style.display = "none";
         copiedMsg.style.display = "none";
         okBtn.style.display = "none";
         loader.style.display = "block";
-
-        // ✅ Secure browser-safe open
-        const gplink = "https://gplinks.co/yMusxqr"; // 👈 Replace this with your real GP link
-        const newTab = window.open(gplink, '_blank');
-
-        if (!newTab) {
-          alert("❌ Please allow pop-ups for this site to proceed.");
-        }
       };
     }
   </script>
