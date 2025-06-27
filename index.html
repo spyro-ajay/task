@@ -13,63 +13,44 @@
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
 
   <!-- Firebase Config -->
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBOASGBeUx9WtencQSpHxIuVYROCIg5yGg",
-      authDomain: "eran-money-34265.firebaseapp.com",
-      databaseURL: "https://eran-money-34265-default-rtdb.firebaseio.com",
-      projectId: "eran-money-34265",
-      storageBucket: "eran-money-34265.appspot.com",
-      messagingSenderId: "823464354489",
-      appId: "1:823464354489:web:72ae96a89d0356b721f168"
-    };
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.database();
-  </script>
+  
+   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyBOASGBeUx9WtencQSpHxIuVYROCIg5yGg",
+    authDomain: "eran-money-34265.firebaseapp.com",
+    databaseURL: "https://eran-money-34265-default-rtdb.firebaseio.com",
+    projectId: "eran-money-34265",
+    storageBucket: "eran-money-34265.appspot.com",
+    messagingSenderId: "823464354489",
+    appId: "1:823464354489:web:72ae96a89d0356b721f168"
+  };
+  firebase.initializeApp(firebaseConfig);
 
-  <!-- Reward Logic -->
-  <script>
-    const taskId = "task1";
-    const reward = 0.50;
-    const cooldown = 24 * 60 * 60 * 1000;
+  const params = new URLSearchParams(window.location.search);
+  const uid = params.get("uid");
+  const task = params.get("task");
+  const token = params.get("token");
 
-    auth.onAuthStateChanged(user => {
-      if (!user) {
-        alert("Please login first!");
-        window.location.href = "index.html";
-        return;
+  if (uid && task && token) {
+    firebase.database().ref(`verifyTokens/${uid}/${task}`).once("value").then(snapshot => {
+      const data = snapshot.val();
+      if (data && data.token === token) {
+        firebase.database().ref(`tokens/${uid}/${task}`).set({
+          verified: true,
+          timestamp: Date.now()
+        }).then(() => {
+          setTimeout(() => {
+            window.location.href = `https://yourappdomain.com/redirect.html?uid=${uid}&task=${task}`;
+          }, 3000);
+        });
+      } else {
+        document.body.innerHTML = "❌ Invalid or expired token.";
       }
-
-      const userRef = db.ref("users/" + user.uid);
-      const taskRef = userRef.child("tasks/" + taskId);
-
-      taskRef.once("value").then(snapshot => {
-        const lastTime = snapshot.val();
-        const now = Date.now();
-
-        if (!lastTime || now - lastTime >= cooldown) {
-          taskRef.set(now);
-          userRef.once("value").then(dataSnap => {
-            const data = dataSnap.val();
-            const balance = parseFloat(data.balance || 0) + reward;
-            const clicks = parseInt(data.clicks || 0) + 1;
-
-            userRef.update({
-              balance: balance.toFixed(2),
-              clicks: clicks
-            }).then(() => {
-              alert(`✅ ₹${reward} added to your balance!`);
-              window.location.href = "Linkpage.html";
-            });
-          });
-        } else {
-          const nextTime = new Date(lastTime + cooldown).toLocaleString();
-          alert(`⏳ Task already done. Next at: ${nextTime}`);
-          window.location.href = "Linkpage.html";
-        }
-      });
     });
-  </script>
+  }
+</script>
+
 </body>
 </html>
