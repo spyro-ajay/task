@@ -111,8 +111,7 @@
   </div>
 
   <div id="notice">
-    🔔 Your code is valid for 7 minutes only and is unique to you.<br />
-    ⚠️ This code will work on the reward page only after 1 min 30 sec (secret for security).
+    🔔 Your code is valid for 7 minutes only and is unique to you.
   </div>
 
   <!-- Firebase Scripts -->
@@ -146,18 +145,15 @@
     if (!uid || !task) {
       document.body.innerHTML = "<h2 style='color:red;'>❌ UID or Task ID missing from URL.</h2>";
     } else {
-      // ✅ Generate unique token
       const token = Math.random().toString(36).substring(2, 10);
       codeContainer.textContent = token;
 
-      // ✅ Save to Firebase
       db.ref(`clickTrackings/${uid}/${task}`).set({
         token: token,
         status: false,
         createdAt: Date.now()
       });
 
-      // ✅ Copy on box or button click
       function copyCode() {
         navigator.clipboard.writeText(token).then(() => {
           copiedMsg.style.display = "block";
@@ -169,7 +165,6 @@
       codeContainer.onclick = copyCode;
       copyBtn.onclick = copyCode;
 
-      // ✅ GP Link redirect
       okBtn.onclick = () => {
         codeContainer.style.display = "none";
         copiedMsg.style.display = "none";
@@ -177,7 +172,7 @@
         loader.style.display = "block";
 
         setTimeout(() => {
-          window.location.href = "https://gplinks.co/yMusxqr"; // 🔁 Replace with your GPLink
+          window.open("https://example.com/gplink", "_blank"); // Replace this with actual GPLink
         }, 1500);
       };
     }
