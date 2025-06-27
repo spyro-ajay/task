@@ -103,7 +103,7 @@
   <div id="copiedMsg">✅ Code Copied!</div>
 
   <button id="copyBtn">Copy Code</button>
-  <button id="okBtn" style="display:none;">OK, Proceed to Task</button>
+  <button id="okBtn" style="display:none;">OK, Proceed to GP Link</button>
 
   <div id="loader">
     <img src="https://i.gifer.com/ZZ5H.gif" width="60" alt="Loading..." />
@@ -111,8 +111,7 @@
   </div>
 
   <div id="notice">
-    🔔 Your code is valid for 7 minutes only and is unique to you.<br />
-    ⚠️ Use this code only on the reward page (not shareable).
+    🔔 Your code is valid for 7 minutes only and is unique to you.
   </div>
 
   <!-- Firebase Scripts -->
@@ -169,7 +168,7 @@
       codeContainer.onclick = copyCode;
       copyBtn.onclick = copyCode;
 
-      // ✅ GP Link redirect — FORCE OPEN EXTERNAL BROWSER
+      // ✅ GP Link redirect — try to force external browser
       okBtn.onclick = () => {
         codeContainer.style.display = "none";
         copiedMsg.style.display = "none";
@@ -177,14 +176,13 @@
         loader.style.display = "block";
 
         setTimeout(() => {
-          const link = "https://gplinks.co/yMusxqr"; // 🔁 Replace with your GP link
-          const ua = navigator.userAgent.toLowerCase();
-
-          if (ua.includes("wv") || ua.includes("android") || ua.includes("fb") || ua.includes("instagram")) {
-            window.open(link, "_blank");
-          } else {
-            window.location.href = link;
-          }
+          // Try to open in external browser
+          const link = "https://gplinks.co/yMusxqr"; // ✅ Replace with your GP link
+          const a = document.createElement("a");
+          a.href = link;
+          a.target = "_blank";
+          a.rel = "noopener noreferrer";
+          a.click();
         }, 1500);
       };
     }
