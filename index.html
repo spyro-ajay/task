@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Starting Task...</title>
@@ -38,8 +38,14 @@
     #codeContainer:hover {
       background-color: #dbeafe;
     }
+    #copiedMsg {
+      color: green;
+      margin-top: 10px;
+      font-size: 15px;
+      display: none;
+    }
     #copyBtn, #okBtn {
-      margin-top: 25px;
+      margin-top: 20px;
       padding: 12px 28px;
       font-size: 17px;
       border: none;
@@ -67,8 +73,6 @@
       display: block;
       margin: 0 auto 15px auto;
     }
-
-    /* Notice fixed bottom */
     #notice {
       position: fixed;
       bottom: 20px;
@@ -96,9 +100,10 @@
   <p>Please copy your unique code below and use it on the reward page within 7 minutes.</p>
 
   <div id="codeContainer" title="Click to copy code">Generating code...</div>
+  <div id="copiedMsg">✅ Code Copied!</div>
 
-  <button id="copyBtn" aria-label="Copy Code">Copy Code</button>
-  <button id="okBtn" aria-label="Proceed to GP Link" style="display:none;">OK, Proceed to GP Link</button>
+  <button id="copyBtn">Copy Code</button>
+  <button id="okBtn" style="display:none;">OK, Proceed to GP Link</button>
 
   <div id="loader">
     <img src="https://i.gifer.com/ZZ5H.gif" width="60" alt="Loading..." />
@@ -136,47 +141,45 @@
     const copyBtn = document.getElementById("copyBtn");
     const okBtn = document.getElementById("okBtn");
     const loader = document.getElementById("loader");
+    const copiedMsg = document.getElementById("copiedMsg");
 
     if (!uid || !task) {
       document.body.innerHTML = "<h2 style='color:red;'>❌ UID or Task ID missing from URL.</h2>";
     } else {
-      // Generate unique token
+      // ✅ Generate unique token
       const token = Math.random().toString(36).substring(2, 10);
       codeContainer.textContent = token;
 
-      // Save token and status false in Firebase
+      // ✅ Save to Firebase
       db.ref(`clickTrackings/${uid}/${task}`).set({
         token: token,
         status: false,
         createdAt: Date.now()
       });
 
-      // Allow copying by clicking code container also
-      codeContainer.onclick = () => copyCode();
-
+      // ✅ Copy on box or button click
       function copyCode() {
         navigator.clipboard.writeText(token).then(() => {
-          alert("Code copied to clipboard! Use it on the reward page within 7 minutes.");
-          // Show OK button after copy
+          copiedMsg.style.display = "block";
           okBtn.style.display = "inline-block";
           copyBtn.style.display = "none";
         });
       }
 
-      copyBtn.addEventListener("click", copyCode);
+      codeContainer.onclick = copyCode;
+      copyBtn.onclick = copyCode;
 
-      okBtn.addEventListener("click", () => {
-        // Show loader and hide buttons
-        okBtn.style.display = "none";
-        copyBtn.style.display = "none";
+      // ✅ GP Link redirect
+      okBtn.onclick = () => {
         codeContainer.style.display = "none";
+        copiedMsg.style.display = "none";
+        okBtn.style.display = "none";
         loader.style.display = "block";
 
-        // Redirect to GP Link (replace with your actual GP Link URL)
         setTimeout(() => {
-          window.location.href = "https://example.com/gplink";  // <-- Yahan GPLink ka URL daal dena
+          window.location.href = "https://example.com/gplink"; // 🔁 Replace with your GPLink
         }, 1500);
-      });
+      };
     }
   </script>
 </body>
