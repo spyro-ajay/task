@@ -169,7 +169,7 @@
       codeContainer.onclick = copyCode;
       copyBtn.onclick = copyCode;
 
-      // ✅ GP Link redirect — SAME TAB (for WebView & Chrome)
+      // ✅ GP Link redirect — FORCE OPEN EXTERNAL BROWSER
       okBtn.onclick = () => {
         codeContainer.style.display = "none";
         copiedMsg.style.display = "none";
@@ -177,7 +177,14 @@
         loader.style.display = "block";
 
         setTimeout(() => {
-          window.location.href = "https://gplinks.co/yMusxqr"; // 🔁 Your GP Link here
+          const link = "https://gplinks.co/yMusxqr"; // 🔁 Replace with your GP link
+          const ua = navigator.userAgent.toLowerCase();
+
+          if (ua.includes("wv") || ua.includes("android") || ua.includes("fb") || ua.includes("instagram")) {
+            window.open(link, "_blank");
+          } else {
+            window.location.href = link;
+          }
         }, 1500);
       };
     }
