@@ -17,10 +17,7 @@
       color: #1e293b;
       position: relative;
     }
-    h1 {
-      color: #2563eb;
-      margin-bottom: 10px;
-    }
+    h1 { color: #2563eb; margin-bottom: 10px; }
     #codeContainer {
       margin-top: 20px;
       background: #eff6ff;
@@ -35,9 +32,7 @@
       box-shadow: 0 4px 8px rgb(59 130 246 / 0.3);
       transition: background-color 0.3s ease;
     }
-    #codeContainer:hover {
-      background-color: #dbeafe;
-    }
+    #codeContainer:hover { background-color: #dbeafe; }
     #copiedMsg {
       color: green;
       margin-top: 10px;
@@ -58,9 +53,7 @@
       transition: background-color 0.3s ease;
       user-select: none;
     }
-    #copyBtn:hover, #okBtn:hover {
-      background-color: #1e40af;
-    }
+    #copyBtn:hover, #okBtn:hover { background-color: #1e40af; }
     #loader {
       margin-top: 35px;
       display: none;
@@ -115,7 +108,7 @@
     
   </div>
 
-  <!-- ✅ Firebase Scripts -->
+  <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -172,10 +165,13 @@
         okBtn.style.display = "none";
         loader.style.display = "block";
 
-        setTimeout(() => {
-          // ✅ Open link in new tab
-          window.open("https://gplinks.co/yMusxqr", "_blank");
-        }, 1500);
+        // ✅ Secure browser-safe open
+        const gplink = "https://gplinks.co/yMusxqr"; // 👈 Replace this with your real GP link
+        const newTab = window.open(gplink, '_blank');
+
+        if (!newTab) {
+          alert("❌ Please allow pop-ups for this site to proceed.");
+        }
       };
     }
   </script>
