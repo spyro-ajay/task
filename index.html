@@ -1,56 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Task 1 - Earn</title>
+  <meta charset="UTF-8">
+  <title>Redirecting Task...</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f6fb;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #3b82f6;
+    }
+    #loader {
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-  <h2 style="text-align:center;">Processing Your Task...</h2>
+  <h1>🚀 Starting Task...</h1>
+  <p>Please wait, redirecting you to the task page...</p>
+  <div id="loader">
+    <img src="https://i.gifer.com/ZZ5H.gif" width="50" alt="Loading..." />
+  </div>
 
   <!-- Firebase Scripts -->
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-  <!-- Firebase Config -->
-  
-   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBOASGBeUx9WtencQSpHxIuVYROCIg5yGg",
-    authDomain: "eran-money-34265.firebaseapp.com",
-    databaseURL: "https://eran-money-34265-default-rtdb.firebaseio.com",
-    projectId: "eran-money-34265",
-    storageBucket: "eran-money-34265.appspot.com",
-    messagingSenderId: "823464354489",
-    appId: "1:823464354489:web:72ae96a89d0356b721f168"
-  };
-  firebase.initializeApp(firebaseConfig);
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBOASGBeUx9WtencQSpHxIuVYROCIg5yGg",
+      authDomain: "eran-money-34265.firebaseapp.com",
+      databaseURL: "https://eran-money-34265-default-rtdb.firebaseio.com",
+      projectId: "eran-money-34265",
+      storageBucket: "eran-money-34265.appspot.com",
+      messagingSenderId: "823464354489",
+      appId: "1:823464354489:web:72ae96a89d0356b721f168"
+    };
 
-  const params = new URLSearchParams(window.location.search);
-  const uid = params.get("uid");
-  const task = params.get("task");
-  const token = params.get("token");
+    firebase.initializeApp(firebaseConfig);
 
-  if (uid && task && token) {
-    firebase.database().ref(`verifyTokens/${uid}/${task}`).once("value").then(snapshot => {
-      const data = snapshot.val();
-      if (data && data.token === token) {
-        firebase.database().ref(`tokens/${uid}/${task}`).set({
-          verified: true,
-          timestamp: Date.now()
-        }).then(() => {
-          setTimeout(() => {
-            window.location.href = `https://yourappdomain.com/redirect.html?uid=${uid}&task=${task}`;
-          }, 3000);
-        });
-      } else {
-        document.body.innerHTML = "❌ Invalid or expired token.";
-      }
-    });
-  }
-</script>
+    const uid = new URLSearchParams(window.location.search).get("uid");
+    const task = new URLSearchParams(window.location.search).get("task");
 
+    if (uid && task) {
+      firebase.database().ref(`tokens/${uid}/${task}/verified`).set(true).then(() => {
+        // 2 second wait before sending to GPLink
+        setTimeout(() => {
+          window.location.href = "https://gplinks.in/your-link"; // Replace with your GPLink
+        }, 2000);
+      });
+    } else {
+      document.body.innerHTML = "<h2 style='color:red;'>❌ Invalid Link. UID or Task missing.</h2>";
+    }
+  </script>
 </body>
 </html>
