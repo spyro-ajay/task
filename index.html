@@ -103,7 +103,7 @@
   <div id="copiedMsg">✅ Code Copied!</div>
 
   <button id="copyBtn">Copy Code</button>
-  <button id="okBtn" style="display:none;">OK, Proceed to GP Link</button>
+  <button id="okBtn" style="display:none;">OK, Proceed to Task</button>
 
   <div id="loader">
     <img src="https://i.gifer.com/ZZ5H.gif" width="60" alt="Loading..." />
@@ -112,7 +112,7 @@
 
   <div id="notice">
     🔔 Your code is valid for 7 minutes only and is unique to you.<br />
-    ✅ Use this code on the reward page after completing the task.
+    ⚠️ Use this code only on the reward page (not shareable).
   </div>
 
   <!-- Firebase Scripts -->
@@ -169,22 +169,16 @@
       codeContainer.onclick = copyCode;
       copyBtn.onclick = copyCode;
 
-      // ✅ GP Link redirect on user click
+      // ✅ GP Link redirect — SAME TAB (for WebView & Chrome)
       okBtn.onclick = () => {
-        const gplink = "https://gplinks.co/yMusxqr"; // 🔁 Replace with your GPLink
-
-        // Open in new tab immediately
-        const win = window.open(gplink, '_blank', 'noopener,noreferrer');
-        if (!win) {
-          alert("❌ Please allow pop-ups in your browser settings.");
-          return;
-        }
-
-        // Show loader in current tab
         codeContainer.style.display = "none";
         copiedMsg.style.display = "none";
         okBtn.style.display = "none";
         loader.style.display = "block";
+
+        setTimeout(() => {
+          window.location.href = "https://gplinks.co/yMusxqr"; // 🔁 Your GP Link here
+        }, 1500);
       };
     }
   </script>
