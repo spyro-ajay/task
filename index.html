@@ -48,13 +48,14 @@
     if (!uid || !task || !token) {
       document.body.innerHTML = "<h2 style='color:red;'>❌ UID, task, or token missing.</h2>";
     } else {
-      db.ref(`verifyTokens/${uid}/${task}`).once("value").then(snapshot => {
+      db.ref(`clickTrackings/${uid}/${task}`).once("value").then(snapshot => {
         const data = snapshot.val();
         if (data && data.token === token) {
-          db.ref(`tokens/${uid}/${task}/verified`).set(true).then(() => {
+          // ✅ Mark as verified
+          db.ref(`clickTrackings/${uid}/${task}/status`).set(true).then(() => {
             setTimeout(() => {
-              // ✅ Open GPlink page (NO need for ?uid etc.)
-              window.location.href = "https://spyro-ajay.github.io/reward.html/";
+              // ✅ Redirect to Reward Page
+              window.location.href = "https://spyro-ajay.github.io/reward.html?uid=" + uid + "&task=" + task;
             }, 2000);
           });
         } else {
