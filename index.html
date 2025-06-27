@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Starting Task...</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
       font-family: 'Poppins', sans-serif;
@@ -11,15 +11,53 @@
       text-align: center;
       padding: 50px;
     }
-    h1 { color: #3b82f6; }
-    #loader { margin-top: 30px; }
+    h1 {
+      color: #3b82f6;
+    }
+    #loader {
+      margin-top: 30px;
+      display: none;
+    }
+    #codeContainer {
+      margin-top: 30px;
+      background: #e0f2fe;
+      padding: 20px;
+      border-radius: 10px;
+      display: inline-block;
+      font-size: 20px;
+      user-select: all;
+      cursor: pointer;
+    }
+    #notice {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #0c4a6e;
+    }
+    #copyBtn {
+      margin-top: 15px;
+      padding: 8px 20px;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
   </style>
 </head>
 <body>
   <h1>🚀 Starting Task...</h1>
-  <p>Please wait, verifying your token and redirecting...</p>
+  <p>Please copy your unique code below and use it on the reward page within 7 minutes.</p>
+
+  <div id="codeContainer">Generating code...</div>
+  <br />
+  <button id="copyBtn">Copy Code</button>
+
+  <div id="notice">🔔 Your code is valid for 7 minutes only.</div>
+
   <div id="loader">
     <img src="https://i.gifer.com/ZZ5H.gif" width="60" alt="Loading..." />
+    <p>Redirecting...</p>
   </div>
 
   <!-- Firebase Scripts -->
@@ -43,21 +81,40 @@
     const query = new URLSearchParams(window.location.search);
     const uid = query.get("uid");
     const task = query.get("task");
-    const token = Math.random().toString(36).substring(2, 10);
+
+    const codeContainer = document.getElementById("codeContainer");
+    const copyBtn = document.getElementById("copyBtn");
+    const loader = document.getElementById("loader");
 
     if (!uid || !task) {
       document.body.innerHTML = "<h2 style='color:red;'>❌ UID or Task ID missing from URL.</h2>";
     } else {
-      // Save token and status: false
+      // Generate unique code/token
+      const token = Math.random().toString(36).substring(2, 10);
+      codeContainer.textContent = token;
+
+      // Save token and status: false with timestamp
       db.ref(`clickTrackings/${uid}/${task}`).set({
         token: token,
         status: false,
         createdAt: Date.now()
-      }).then(() => {
-        // 👇 Redirect to GPLink (no uid/token in URL)
-        setTimeout(() => {
-          window.location.href = "https://spyro-ajay.github.io/reward.html/";
-        }, 2000);
+      });
+
+      // Copy button functionality
+      copyBtn.addEventListener("click", () => {
+        navigator.clipboard.writeText(token).then(() => {
+          alert("Code copied to clipboard! Use it on the reward page within 7 minutes.");
+          // Optionally show loader and redirect to reward page or let user manually go
+          // Uncomment below lines if you want auto redirect on copy
+          /*
+          copyBtn.style.display = "none";
+          codeContainer.style.display = "none";
+          loader.style.display = "block";
+          setTimeout(() => {
+            window.location.href = "https://spyro-ajay.github.io/reward.html";
+          }, 2000);
+          */
+        });
       });
     }
   </script>
