@@ -93,6 +93,16 @@
       user-select: none;
       z-index: 1000;
     }
+
+    #adBanner {
+  position: fixed;
+  bottom: 90px; /* So it doesn't overlap with the notice */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  z-index: 999;
+}
+
   </style>
 </head>
 <body>
@@ -113,6 +123,27 @@
   <div id="notice">
     🔔 Your code is valid for 7 minutes only and is unique to you.
   </div>
+
+  <!-- 🔻 Banner Ad Space (for Astrea or AdSense) -->
+<div id="adBanner">
+  <!-- Paste your Astrea Ads script here -->
+  <script type="text/javascript">
+	atOptions = {
+		'key' : 'c75aa1a2cacbe11e009128bda66ed16f',
+		'format' : 'iframe',
+		'height' : 50,
+		'width' : 320,
+		'params' : {}
+	};
+</script>
+<script type="text/javascript" src="//www.highperformanceformat.com/c75aa1a2cacbe11e009128bda66ed16f/invoke.js"></script>
+  <p style="text-align:center; color:#888; font-size:14px;">Advertisement</p>
+  <!-- Example placeholder -->
+  <div style="width:100%; height:90px; background:#e2e8f0; border-radius:8px; display:flex; justify-content:center; align-items:center; color:#64748b; font-weight:600;">
+    Your Ad Here (320x90)
+  </div>
+</div>
+
 
   <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
